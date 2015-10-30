@@ -1,0 +1,7 @@
+*.log
+*.sql
+*.map
+/.idea
+/.idea/*
+/node_modules
+/node_modules/*

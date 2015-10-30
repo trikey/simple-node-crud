@@ -1,0 +1,37 @@
+doctype
+html
+    head
+        title #{title}
+        link(rel='stylesheet', href='/css/bootstrap.min.css')
+        link(rel='stylesheet', href='/css/simple-sidebar.css')
+        <!--[if lt IE 9]>
+        script(src='https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js')
+        script(src='https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js')
+        <![endif]-->
+    body
+        div#wrapper
+            div#sidebar-wrapper
+                ul.sidebar-nav
+                    li.sidebar-brand
+                        a(href='#') Start Bootstrap
+                    li
+                        a(href='#') Start Bootstrap
+                    li
+                        a(href='#') Start Bootstrap
+                    li
+                        a(href='#') Start Bootstrap
+                    li
+                        a(href='#') Start Bootstrap
+                    li
+                        a(href='#') Start Bootstrap
+                    li
+                        a(href='#') Start Bootstrap
+            div#page-content-wrapper
+                .container-fluid
+                    .row
+                        .col-lg-12
+                            block content
+
+        script(src='/js/jquery.js')
+        script(src='/js/bootstrap.min.js')
+        script(src='/js/script.js')
