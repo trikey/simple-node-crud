@@ -12,20 +12,10 @@ html
         div#wrapper
             div#sidebar-wrapper
                 ul.sidebar-nav
-                    li.sidebar-brand
-                        a(href='#') Start Bootstrap
-                    li
-                        a(href='#') Start Bootstrap
-                    li
-                        a(href='#') Start Bootstrap
-                    li
-                        a(href='#') Start Bootstrap
-                    li
-                        a(href='#') Start Bootstrap
-                    li
-                        a(href='#') Start Bootstrap
-                    li
-                        a(href='#') Start Bootstrap
+                    each menuItem in menu
+                        li.sidebar-brand
+                            a(href='#{menuItem.href}') #{menuItem.title}
+
             div#page-content-wrapper
                 .container-fluid
                     .row

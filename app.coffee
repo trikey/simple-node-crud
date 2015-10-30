@@ -1,7 +1,4 @@
 express = require 'express'
-Config = require('./config')
-knex = require('knex')(Config)
-bookshelf = require('bookshelf')(knex);
 bodyParser = require('body-parser');
 
 app = express()
@@ -16,6 +13,9 @@ app.use(express.static(__dirname + '/public'))
 
 
 Post = require("./models/post")
+app.locals.menu = require('./menu')
+
+
 
 app.get('/', (req, res) ->
     Post.forge()
@@ -26,6 +26,7 @@ app.get('/', (req, res) ->
             res.render 'index',
                 items: items
                 total: items.length
+                title: 'Items'
         else
             res.json(error: true, data: 'object not found')
     )

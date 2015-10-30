@@ -5,7 +5,7 @@ Schema =
         title:
             type: 'string', maxlength: 150, nullable: false
         html:
-            type: 'text', maxlength: 16777215, fieldtype: 'medium', nullable: false
+            type: 'text', fieldtype: 'text', nullable: false
         created_at:
             type: 'dateTime', nullable: false
         updated_at:
