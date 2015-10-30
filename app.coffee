@@ -31,7 +31,7 @@ app.get('/', (req, res) ->
     )
     .catch( (err) ->
         res.status(500).json(error: true, data: message: err.message)
-    );
+    )
 )
 
 app.get('/:id', (req, res) ->
