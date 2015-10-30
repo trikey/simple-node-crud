@@ -27,6 +27,7 @@ app.get('/', (req, res) ->
                 items: items
                 total: items.length
                 title: 'Items'
+                path: req.path
         else
             res.json(error: true, data: 'object not found')
     )
@@ -39,8 +40,11 @@ app.get('/:id', (req, res) ->
     Post.forge(id: req.params.id)
     .fetch()
     .then((collection) ->
+        item = collection.toJSON()
         if collection?
-            res.render 'detail', collection.toJSON()
+            res.render 'detail',
+                item
+                path: req.path
         else
             res.json(error: true, data: 'object not found')
     )

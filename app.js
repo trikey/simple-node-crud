@@ -32,7 +32,8 @@
         return res.render('index', {
           items: items,
           total: items.length,
-          title: 'Items'
+          title: 'Items',
+          path: req.path
         });
       } else {
         return res.json({
@@ -54,8 +55,12 @@
     return Post.forge({
       id: req.params.id
     }).fetch().then(function(collection) {
+      var item;
+      item = collection.toJSON();
       if (collection != null) {
-        return res.render('detail', collection.toJSON());
+        return res.render('detail', item, {
+          path: req.path
+        });
       } else {
         return res.json({
           error: true,

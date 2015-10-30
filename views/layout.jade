@@ -13,7 +13,7 @@ html
             div#sidebar-wrapper
                 ul.sidebar-nav
                     each menuItem in menu
-                        li.sidebar-brand
+                        li(class = path == menuItem.href ? 'sidebar-brand' : undefined)
                             a(href='#{menuItem.href}') #{menuItem.title}
 
             div#page-content-wrapper

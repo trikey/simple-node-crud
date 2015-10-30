@@ -16,8 +16,7 @@
       },
       html: {
         type: 'text',
-        maxlength: 16777215,
-        fieldtype: 'medium',
+        fieldtype: 'text',
         nullable: false
       },
       created_at: {
