@@ -1,34 +1,21 @@
 express = require 'express'
-stylus = require 'stylus'
-nib = require 'nib'
 Config = require('./config')
 knex = require('knex')(Config)
 bookshelf = require('bookshelf')(knex);
+bodyParser = require('body-parser');
 
 app = express()
 
-bodyParser = require('body-parser');
 app.use bodyParser.urlencoded(extended: true)
 app.use bodyParser.json()
 
-compile = (str, path) ->
-    stylus(str)
-        .set('filename', path)
-        .use(nib())
-
 app.set 'views', __dirname + '/views'
 app.set 'view engine', 'jade'
-
-app.use(stylus.middleware
-    src: __dirname + '/public'
-    compile: compile
-)
 
 app.use(express.static(__dirname + '/public'))
 
 
 Post = require("./models/post")
-
 app.get('/', (req, res) ->
     Post.forge()
     .fetch()
