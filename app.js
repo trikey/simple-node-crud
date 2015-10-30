@@ -33,7 +33,7 @@
           items: items,
           total: items.length,
           title: 'Items',
-          path: req.path
+          activeMenuItem: '/'
         });
       } else {
         return res.json({
@@ -58,8 +58,9 @@
       var item;
       item = collection.toJSON();
       if (collection != null) {
-        return res.render('detail', item, {
-          path: req.path
+        return res.render('detail', {
+          item: item,
+          activeMenuItem: '/'
         });
       } else {
         return res.json({

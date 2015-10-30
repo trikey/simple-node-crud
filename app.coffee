@@ -27,7 +27,7 @@ app.get('/', (req, res) ->
                 items: items
                 total: items.length
                 title: 'Items'
-                path: req.path
+                activeMenuItem: '/'
         else
             res.json(error: true, data: 'object not found')
     )
@@ -43,8 +43,8 @@ app.get('/:id', (req, res) ->
         item = collection.toJSON()
         if collection?
             res.render 'detail',
-                item
-                path: req.path
+                item: item
+                activeMenuItem: '/'
         else
             res.json(error: true, data: 'object not found')
     )
