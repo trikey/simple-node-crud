@@ -1,6 +1,7 @@
 extend layout
 block content
-    p
-        | Супер Текст
-        | Больше текста
-    p Еще текст
+    p Всего записей #{total}
+    ul
+        each item in items
+            li
+                a(href='/#{item.id}') #{item.title}

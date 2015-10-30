@@ -16,12 +16,18 @@ app.use(express.static(__dirname + '/public'))
 
 
 Post = require("./models/post")
+
 app.get('/', (req, res) ->
     Post.forge()
-    .fetch()
+    .fetchAll()
     .then((collection) ->
-        res.json(error: false, data: collection.toJSON()) if collection?
-        res.json(error: true, data: 'object not found')
+        items = collection.toJSON()
+        if collection?
+            res.render 'index',
+                items: items
+                total: items.length
+        else
+            res.json(error: true, data: 'object not found')
     )
     .catch( (err) ->
         res.status(500).json(error: true, data: message: err.message)
@@ -32,8 +38,10 @@ app.get('/:id', (req, res) ->
     Post.forge(id: req.params.id)
     .fetch()
     .then((collection) ->
-        res.json(error: false, data: collection.toJSON()) if collection?
-        res.json(error: true, data: 'object not found')
+        if collection?
+            res.render 'detail', collection.toJSON()
+        else
+            res.json(error: true, data: 'object not found')
     )
     .catch( (err) ->
         res.status(500).json(error: true, data: message: err.message)

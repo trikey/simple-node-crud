@@ -29,17 +29,20 @@
   Post = require("./models/post");
 
   app.get('/', function(req, res) {
-    return Post.forge().fetch().then(function(collection) {
+    return Post.forge().fetchAll().then(function(collection) {
+      var items;
+      items = collection.toJSON();
       if (collection != null) {
-        res.json({
-          error: false,
-          data: collection.toJSON()
+        return res.render('index', {
+          items: items,
+          total: items.length
+        });
+      } else {
+        return res.json({
+          error: true,
+          data: 'object not found'
         });
       }
-      return res.json({
-        error: true,
-        data: 'object not found'
-      });
     })["catch"](function(err) {
       return res.status(500).json({
         error: true,
@@ -55,15 +58,13 @@
       id: req.params.id
     }).fetch().then(function(collection) {
       if (collection != null) {
-        res.json({
-          error: false,
-          data: collection.toJSON()
+        return res.render('detail', collection.toJSON());
+      } else {
+        return res.json({
+          error: true,
+          data: 'object not found'
         });
       }
-      return res.json({
-        error: true,
-        data: 'object not found'
-      });
     })["catch"](function(err) {
       return res.status(500).json({
         error: true,
