@@ -24,72 +24,113 @@
 
   memcached = new Memcached('localhost:11211');
 
-  memcached.set('foo', 'bar', 10, function(err) {
-    return console.log(err);
-  });
-
-  memcached.get('foo', function(err, data) {
-    return console.log(data);
-  });
-
   Post = require("./models/post");
 
   app.locals.menu = require('./menu');
 
-  console.log(app.locals.menu);
-
   app.get('/', function(req, res) {
-    return Post.forge().fetchAll().then(function(collection) {
+    return memcached.get('items_list', function(err, data) {
       var items;
-      items = collection.toJSON();
-      if (collection != null) {
-        return res.render('index', {
-          items: items,
-          total: items.length,
-          title: 'Items',
-          activeMenuItem: '/'
-        });
+      console.log('get items from cache');
+      if (data != null) {
+        items = data;
+        if (items != null) {
+          return res.render('index', {
+            items: items,
+            total: items.length,
+            title: 'Items',
+            activeMenuItem: '/'
+          });
+        } else {
+          return res.json({
+            error: true,
+            data: 'object not found'
+          });
+        }
       } else {
-        return res.json({
-          error: true,
-          data: 'object not found'
+        return Post.forge().fetchAll().then(function(collection) {
+          items = collection.toJSON();
+          console.log('new cache');
+          memcached.set('items_list', items, 3600, function(err) {
+            if (err != null) {
+              return console.log(err);
+            }
+          });
+          if (items != null) {
+            return res.render('index', {
+              items: items,
+              total: items.length,
+              title: 'Items',
+              activeMenuItem: '/'
+            });
+          } else {
+            return res.json({
+              error: true,
+              data: 'object not found'
+            });
+          }
+        })["catch"](function(err) {
+          return res.status(500).json({
+            error: true,
+            data: {
+              message: err.message
+            }
+          });
         });
       }
-    })["catch"](function(err) {
-      return res.status(500).json({
-        error: true,
-        data: {
-          message: err.message
-        }
-      });
     });
   });
 
   app.get('/:id', function(req, res) {
-    return Post.forge({
-      id: req.params.id
-    }).fetch().then(function(collection) {
+    return memcached.get("item" + req.params.id, function(err, data) {
       var item;
-      item = collection.toJSON();
-      if (collection != null) {
-        return res.render('detail', {
-          item: item,
-          activeMenuItem: '/',
-          title: item.title
-        });
+      console.log("get item" + req.params.id + " from cache");
+      if (data != null) {
+        item = data;
+        if (item != null) {
+          return res.render('detail', {
+            item: item,
+            activeMenuItem: '/',
+            title: item.title
+          });
+        } else {
+          return res.json({
+            error: true,
+            data: 'object not found'
+          });
+        }
       } else {
-        return res.json({
-          error: true,
-          data: 'object not found'
+        return Post.forge({
+          id: req.params.id
+        }).fetch().then(function(collection) {
+          item = collection.toJSON();
+          console.log("new cache item" + req.params.id);
+          memcached.set("item" + req.params.id, item, 3600, function(err) {
+            if (err != null) {
+              return console.log(err);
+            }
+          });
+          if (collection != null) {
+            return res.render('detail', {
+              item: item,
+              activeMenuItem: '/',
+              title: item.title
+            });
+          } else {
+            return res.json({
+              error: true,
+              data: 'object not found'
+            });
+          }
+        })["catch"](function(err) {
+          return res.status(500).json({
+            error: true,
+            data: {
+              message: err.message
+            }
+          });
         });
       }
-    })["catch"](function(err) {
-      return res.status(500).json({
-        error: true,
-        data: {
-          message: err.message
-        }
-      });
     });
   });
 
