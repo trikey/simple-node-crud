@@ -16,13 +16,15 @@
 
   app.set('views', __dirname + '/views');
 
-  app.set('view engine', 'jade');
+  app.set('view engine', 'ejs');
 
   app.use(express["static"](__dirname + '/public'));
 
   Post = require("./models/post");
 
   app.locals.menu = require('./menu');
+
+  console.log(app.locals.menu);
 
   app.get('/', function(req, res) {
     return Post.forge().fetchAll().then(function(collection) {
@@ -60,7 +62,8 @@
       if (collection != null) {
         return res.render('detail', {
           item: item,
-          activeMenuItem: '/'
+          activeMenuItem: '/',
+          title: item.title
         });
       } else {
         return res.json({

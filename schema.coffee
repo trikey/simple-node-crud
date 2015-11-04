@@ -11,4 +11,4 @@ Schema =
         updated_at:
             type: 'dateTime', nullable: true
 
-module.exports = Schema;
+module.exports = Schema

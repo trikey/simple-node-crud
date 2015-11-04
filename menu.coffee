@@ -2,4 +2,4 @@ Menu = news:
     href: '/'
     title: 'Новости'
 
-module.exports = Menu;
+module.exports = Menu

@@ -7,7 +7,8 @@ app.use bodyParser.urlencoded(extended: true)
 app.use bodyParser.json()
 
 app.set 'views', __dirname + '/views'
-app.set 'view engine', 'jade'
+#app.set 'view engine', 'jade'
+app.set 'view engine', 'ejs'
 
 app.use(express.static(__dirname + '/public'))
 
@@ -15,13 +16,13 @@ app.use(express.static(__dirname + '/public'))
 Post = require("./models/post")
 app.locals.menu = require('./menu')
 
-
-
+console.log(app.locals.menu)
 app.get('/', (req, res) ->
     Post.forge()
     .fetchAll()
     .then((collection) ->
         items = collection.toJSON()
+
         if collection?
             res.render 'index',
                 items: items
@@ -45,6 +46,7 @@ app.get('/:id', (req, res) ->
             res.render 'detail',
                 item: item
                 activeMenuItem: '/'
+                title: item.title
         else
             res.json(error: true, data: 'object not found')
     )
