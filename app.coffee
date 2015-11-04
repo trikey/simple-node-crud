@@ -7,90 +7,57 @@ app.use bodyParser.urlencoded(extended: true)
 app.use bodyParser.json()
 
 app.set 'views', __dirname + '/views'
-#app.set 'view engine', 'jade'
 app.set 'view engine', 'ejs'
 
 app.use(express.static(__dirname + '/public'))
 
-Memcached = require('memcached')
-memcached = new Memcached('localhost:11211')
+memcached = require('./myMemcache')
 
 Post = require("./models/post")
 app.locals.menu = require('./menu')
 
 app.get('/', (req, res) ->
 
-    memcached.get('items_list', (err, data) ->
-        console.log 'get items from cache'
-        if data?
-            items = data
-            if items?
-                res.render 'index',
-                    items: items
-                    total: items.length
-                    title: 'Items'
-                    activeMenuItem: '/'
-            else
-                res.json(error: true, data: 'object not found')
-        else
-            Post.forge()
-            .fetchAll()
-            .then((collection) ->
-                items = collection.toJSON()
-                console.log 'new cache'
-                memcached.set('items_list', items, 3600, (err) ->
-                    console.log err if err?
-                )
-                if items?
-                    res.render 'index',
-                        items: items
-                        total: items.length
-                        title: 'Items'
-                        activeMenuItem: '/'
-                else
-                    res.json(error: true, data: 'object not found')
-            )
-            .catch( (err) ->
-                res.status(500).json(error: true, data: message: err.message)
-            )
-    )
+    getItems = ->
+        Post.forge().fetchAll()
+        .then (collection) -> collection.toJSON()
+        .catch (err) ->
+            res.status(500).json(error: true, data: message: err.message)
 
+
+    memcached.fetch 'items_list', getItems
+    .then (items) ->
+        if items?
+            res.render 'index',
+                items: items
+                total: items.length
+                title: 'Items'
+                activeMenuItem: '/'
+        else
+            res.json(error: true, data: 'object not found')
 
 )
 
 app.get('/:id', (req, res) ->
-    memcached.get("item#{req.params.id}", (err, data) ->
-        console.log "get item#{req.params.id} from cache"
-        if data?
-            item = data
-            if item?
-                res.render 'detail',
-                    item: item
-                    activeMenuItem: '/'
-                    title: item.title
-            else
-                res.json(error: true, data: 'object not found')
+
+    getItem = ->
+        Post.forge(id: req.params.id)
+        .fetch()
+        .then (collection) -> collection.toJSON()
+        .catch (err) ->
+            res.status(500).json(error: true, data: message: err.message)
+
+    memcached.fetch "item#{req.params.id}", getItem
+    .then (data) ->
+        item = data
+        if item?
+            res.render 'detail',
+                item: item
+                activeMenuItem: '/'
+                title: item.title
         else
-            Post.forge(id: req.params.id)
-            .fetch()
-            .then((collection) ->
-                item = collection.toJSON()
-                console.log "new cache item#{req.params.id}"
-                memcached.set("item#{req.params.id}", item, 3600, (err) ->
-                    console.log err if err?
-                )
-                if collection?
-                    res.render 'detail',
-                        item: item
-                        activeMenuItem: '/'
-                        title: item.title
-                else
-                    res.json(error: true, data: 'object not found')
-            )
-            .catch( (err) ->
-                res.status(500).json(error: true, data: message: err.message)
-            )
-    )
+            res.json(error: true, data: 'object not found')
+
 )
 
 app.post('/', (req, res) ->
