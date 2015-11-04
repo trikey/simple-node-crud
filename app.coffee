@@ -12,6 +12,15 @@ app.set 'view engine', 'ejs'
 
 app.use(express.static(__dirname + '/public'))
 
+Memcached = require('memcached')
+
+memcached = new Memcached('localhost:11211')
+memcached.set('foo', 'bar', 10, (err) ->
+    console.log(err)
+)
+memcached.get('foo', (err, data) ->
+    console.log(data)
+)
 
 Post = require("./models/post")
 app.locals.menu = require('./menu')
