@@ -2,6 +2,8 @@ express = require 'express'
 bodyParser = require('body-parser');
 
 app = express()
+http = require('http').Server(app);
+io = require('socket.io')(http)
 
 app.use bodyParser.urlencoded(extended: true)
 app.use bodyParser.json()
@@ -15,6 +17,26 @@ memcached = require('./myMemcache')
 
 Post = require("./models/post")
 app.locals.menu = require('./menu')
+
+http.listen 3000, ->
+    console.log('listening on *:3000')
+
+
+io.on 'connection', (socket) ->
+    console.log('a user connected')
+    socket.on 'disconnect', ->
+        console.log('user disconnected')
+    socket.on 'chat message', (msg) ->
+        console.log('message: ' + msg)
+        io.emit('chat message', msg)
+
+app.get('/chat/', (req, res) ->
+    res.render 'chat',
+        title: 'Чат',
+        activeMenuItem: '/chat/'
+)
+
+
 
 app.get('/', (req, res) ->
 
@@ -102,4 +124,4 @@ app.delete('/:id', (req, res) ->
     )
 )
 
-app.listen 3000
+#app.listen 3000
