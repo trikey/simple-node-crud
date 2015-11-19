@@ -21,14 +21,31 @@ app.locals.menu = require('./menu')
 http.listen 3000, ->
     console.log('listening on *:3000')
 
-
+people = {}
 io.on 'connection', (socket) ->
     console.log('a user connected')
     socket.on 'disconnect', ->
         console.log('user disconnected')
+        io.emit("update", people[socket.id] + " ушел нахуй с сервера")
+        delete people[socket.id]
+        io.emit("update-people", people)
+
     socket.on 'chat message', (msg) ->
         console.log('message: ' + msg)
         io.emit('chat message', msg)
+
+    socket.on 'join', (name) ->
+        console.log name
+        people[socket.id] = name
+        socket.emit('update', 'Вы присоединились к серверу')
+        io.emit('update', name + ' присоединился к серверу')
+        io.emit('update-people', people)
+
+    socket.on 'send', (msg) ->
+        console.log(msg)
+        console.log(people[socket.id])
+        io.emit('chat', people[socket.id], msg)
+
 
 app.get('/chat/', (req, res) ->
     res.render 'chat',

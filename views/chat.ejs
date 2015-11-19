@@ -1,8 +1,37 @@
 <% include header %>
 <h1>Действительно приватный чат</h1>
 <br/>
-<form action="">
-    <input id="m" autocomplete="off" /><button>Отправить</button>
-</form>
-<ul id="messages"></ul>
+
+<div class="row">
+    <div class="span2">
+        <h3>Пока в сессию и куки ничего не пишется, поэтому при обновлении страницы придется логиниться опять</h3>
+        <h3>Люди в этом чате</h3>
+        <ul id="people" class="unstyled">
+            <li>Пока никого нету</li>
+        </ul>
+    </div>
+    <div class="span4">
+        <ul id="msgs" class="unstyled"></ul>
+    </div>
+</div>
+<div class="row">
+    <div class="span5 offset2" id="login">
+        <form class="form-inline">
+            <input type="text" class="input-small form-control" placeholder="Ваше имя" id="name">
+            <input type="button" name="join" id="join" value="Вступить в чат" class="btn btn-primary">
+        </form>
+    </div>
+
+    <div class="span5 offset2" id="chat">
+        <form id="2" class="form-inline">
+            <input type="text" class="input form-control" placeholder="Ваще сообщение" id="msg">
+            <input type="button" name="send" id="send" value="Send" class="btn btn-success">
+        </form>
+    </div>
+</div>
+<!--<form action="" class="form-inline">-->
+    <!--<input id="m" autocomplete="off" class="form-control"/>-->
+    <!--<button class="btn">Отправить</button>-->
+<!--</form>-->
+<!--<ul id="messages"></ul>-->
 <% include footer %>
