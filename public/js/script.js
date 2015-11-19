@@ -55,7 +55,8 @@
     if (ready) {
       $("#people").empty();
       return $.each(people, function(clientid, name) {
-        return $('#people').append("<li>" + name + "</li>");
+        $('#people').append("<li><strong>" + name + "</strong></li>");
+        return $(".people").show();
       });
     }
   });

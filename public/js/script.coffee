@@ -42,7 +42,8 @@ socket.on "update-people", (people) ->
     if(ready)
         $("#people").empty()
         $.each(people, (clientid, name) ->
-            $('#people').append("<li>#{name}</li>")
+            $('#people').append("<li><strong>#{name}</strong></li>")
+            $(".people").show()
         )
 
 socket.on "chat", (who, msg) ->
