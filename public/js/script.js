@@ -15,7 +15,7 @@
 
   $('#name').focus();
 
-  $("form").submit(function(event) {
+  $("form").not("#auth_form").submit(function(event) {
     return event.preventDefault();
   });
 

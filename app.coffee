@@ -1,5 +1,10 @@
 express = require 'express'
-bodyParser = require('body-parser');
+bodyParser = require('body-parser')
+cookieParser = require('cookie-parser')
+session = require('express-session')
+passport = require('passport')
+bcrypt = require('bcrypt-nodejs')
+async = require('async')
 
 app = express()
 http = require('http').Server(app);
@@ -16,6 +21,47 @@ app.use(express.static(__dirname + '/public'))
 memcached = require('./myMemcache')
 
 Post = require("./models/post")
+User = require("./models/user")
+
+LocalStrategy = require('passport-local').Strategy
+passport.use(new LocalStrategy((username, password, done) ->
+    User.forge(
+        username: username
+    )
+    .fetch()
+    .then((data) ->
+        user = data
+        if(user is null)
+            return done(null, false, {message: 'Неверное имя пользователя или пароль'})
+        else
+            user = data.toJSON();
+            if(!bcrypt.compareSync(password, user.password))
+                return done(null, false, {message: 'Неверное имя пользователя или пароль'})
+            else
+                return done(null, user)
+    )
+))
+
+passport.serializeUser((user, done) ->
+    done(null, user.username)
+)
+
+passport.deserializeUser((username, done) ->
+    User.forge(
+        username: username
+    )
+    .fetch()
+    .then((user) ->
+        done(null, user)
+    )
+)
+
+app.use(cookieParser())
+app.use(session({secret: 'swordfish1992'}))
+app.use(passport.initialize())
+app.use(passport.session())
+
+
 app.locals.menu = require('./menu')
 
 http.listen 3000, ->
@@ -53,7 +99,98 @@ app.get('/chat/', (req, res) ->
         activeMenuItem: '/chat/'
 )
 
+posts = false
+users = false
+app.get('/admin', (req, res) ->
+    if(!req.isAuthenticated())
+        res.redirect('/auth')
+    else
 
+        async.parallel(
+            [
+                (callback) ->
+                    Post.forge().fetchAll()
+                        .then (collection) ->
+                            posts = collection.toJSON()
+                            callback()
+                (callback) ->
+                    User.forge().fetchAll()
+                        .then (collection) ->
+                            users = collection.toJSON()
+                            callback()
+            ],
+            (err) ->
+                res.render 'admin',
+                    activeMenuItem: '/admin/'
+                    title: 'index admin'
+                    posts: posts
+                    users: users
+        )
+
+
+
+
+#            User.forge()
+#            .fetch()
+#            .then (collection2) ->
+#                users = collection2.toJSON()
+#                console.log posts
+
+)
+
+
+app.get('/auth', (req, res) ->
+    if(req.isAuthenticated())
+        res.redirect('/')
+    else
+        res.render 'auth',
+            activeMenuItem: '/auth/'
+            title: 'Авторизация'
+)
+
+app.post('/auth', (req, res) ->
+    passport.authenticate('local',
+        successRedirect: '/admin'
+        failureRedirect: '/auth'
+    (err, user, info) ->
+        return res.render('auth',
+            activeMenuItem: '/auth/'
+            title: 'Авторизация'
+            message: err.message
+        ) if err
+        return res.render('auth',
+            activeMenuItem: '/auth/'
+            title: 'Авторизация'
+            message: info.message
+        ) if !user
+
+        return req.logIn(user, (err) ->
+            if(err)
+                return res.render('auth',
+                    activeMenuItem: '/auth/',
+                    title: 'Авторизация',
+                    message: err.message
+                )
+            else
+                return res.redirect('/')
+        )
+    )(req, res)
+)
+
+app.post('/users', (req, res) ->
+    User.forge(
+        username: req.body.username
+        password: bcrypt.hashSync(req.body.password)
+        is_admin: 1
+    )
+    .save()
+    .then((user) ->
+        res.json(error: false, data: user.toJSON(), message: "user saved")
+    )
+    .catch( (err) ->
+        res.status(500).json(error: true, data: message: err.message)
+    )
+)
 
 app.get('/', (req, res) ->
 
@@ -141,4 +278,4 @@ app.delete('/:id', (req, res) ->
     )
 )
 
-#app.listen 3000
+

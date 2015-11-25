@@ -1,0 +1,56 @@
+<% include header %>
+<h1>Администрационная область</h1>
+<br/>
+<h3>Новости</h3>
+<div class="table-responsive">
+    <table class="table table-bordered table-hover">
+        <thead>
+        <tr>
+            <th>id</th>
+            <th>title</th>
+            <th>html</th>
+            <th>created_at</th>
+            <th>updated_at</th>
+        </tr>
+        </thead>
+        <tbody>
+        <% posts.forEach(function(item) { %>
+        <tr>
+            <th><%= item.id %></th>
+            <th><%= item.title %></th>
+            <th><%= item.html %></th>
+            <th><%= item.created_at %></th>
+            <th><%= item.updated_at %></th>
+        </tr>
+        <% }); %>
+        </tbody>
+    </table>
+</div>
+<h3>Пользователи</h3>
+<div class="table-responsive">
+    <table class="table table-bordered table-hover">
+        <thead>
+        <tr>
+            <th>id</th>
+            <th>username</th>
+            <th>password</th>
+            <th>is_admin</th>
+            <th>created_at</th>
+            <th>updated_at</th>
+        </tr>
+        </thead>
+        <tbody>
+        <% users.forEach(function(item) { %>
+        <tr>
+            <th><%= item.id %></th>
+            <th><%= item.username %></th>
+            <th><%= item.password %></th>
+            <th><%= item.is_admin %></th>
+            <th><%= item.created_at %></th>
+            <th><%= item.updated_at %></th>
+        </tr>
+        <% }); %>
+        </tbody>
+    </table>
+</div>
+<% include footer %>

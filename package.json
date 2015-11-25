@@ -5,10 +5,13 @@
   "dependencies": {
     "acorn": "^2.5.2",
     "body-parser": "^1.14.1",
+    "cookie-parser": "*",
     "bookshelf": "^0.8.2",
     "ejs": "^2.3.4",
     "express": "^4.13.3",
     "express-ejs-layouts": "^2.0.0",
+    "express-session": "*",
+    "bcrypt-nodejs": "*",
     "jade": "^1.11.0",
     "knex": "^0.8.6",
     "lodash": "^3.10.1",
@@ -21,6 +24,9 @@
     "stylus": "*",
     "sugar": "^1.4.1",
     "sugarjs": "^0.1.0",
-    "when": "^3.7.4"
+    "when": "^3.7.4",
+    "passport": "*",
+    "passport-local": "*",
+    "async": "*"
   }
 }

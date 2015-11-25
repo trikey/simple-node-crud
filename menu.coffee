@@ -5,5 +5,11 @@ Menu =
     chat:
         href: '/chat/',
         title: 'Чат'
+    admin:
+        href: '/admin/',
+        title: 'Админка'
+    auth:
+        href: '/auth/',
+        title: 'Авторизация'
 
 module.exports = Menu

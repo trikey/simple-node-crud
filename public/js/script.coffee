@@ -9,8 +9,9 @@ ready = false
 $('#chat').hide()
 $('#name').focus()
 
-$("form").submit (event) ->
+$("form").not("#auth_form").submit (event) ->
     event.preventDefault()
+
 
 
 $("#join").click ->
