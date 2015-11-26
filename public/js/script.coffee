@@ -9,7 +9,7 @@ ready = false
 $('#chat').hide()
 $('#name').focus()
 
-$("form").not("#auth_form").submit (event) ->
+$("form").not(".custom_form").submit (event) ->
     event.preventDefault()
 
 
@@ -68,11 +68,71 @@ $("#msg").keypress (e) ->
         $("#msg").val("")
 
 
+$('.posts-table').editableTableWidget()
 
-#$('form').submit ->
-#    socket.emit('chat message', $('#m').val())
-#    $('#m').val('')
-#    false
-#
-#socket.on 'chat message', (msg) ->
-#    $('#messages').append($('<li>').text(msg))
+$('.posts-table td').on('change', (evt, newValue) ->
+    id = $(evt.target).parent().attr('data-id')
+    url = $(evt.target).parent().attr('data-url')
+    updateData = {}
+    updateData['id'] = id
+    $(evt.target).parent().find('td').not('.non-editable').each ->
+        updateData[$(this).attr('data-column-name')] = $(this).text()
+    .promise().done ->
+        $.ajax
+            type: 'put',
+            url: url + id,
+            data: updateData
+        .done (data) ->
+            console.log data
+)
+
+$('.posts-table td.delete').on('click', ->
+    id = $(this).parent().attr('data-id')
+    url = $(this).parent().attr('data-url')
+    $.ajax
+        type: 'delete',
+        url: url + id,
+    .done (data) ->
+        console.log data
+        window.location.reload()
+)
+
+$('.add-item').on('click', ->
+    table = $(this).attr('data-table')
+    $.ajax
+        type: 'get',
+        url: '/add',
+        data:
+            table: table
+    .done (data) ->
+        $('body').append(data)
+        $('.custom-modal .hide').show()
+        $('.custom-modal').modal()
+        $('.custom-modal').on('hidden', ->
+            console.log("hidden")
+            $('.custom-modal').remove()
+        )
+)
+
+$(document).on('click', '#add_item', ->
+    error_found = false
+    $(this).parents('form').find('input[type=text]').each ->
+        if $(this).attr('required') == 'required' and !$(this).val().length
+            $(this).parent().addClass('has-error')
+            error_found = true
+        else
+            $(this).parent().removeClass('has-error')
+    .promise().done ->
+        if !error_found
+            $.ajax
+                type: 'post',
+                url: $(this).parents('form').attr('action'),
+                data: $(this).parents('form').serialize(),
+                dataType: 'json'
+            .done (data) ->
+                if data.error
+                    $('#error').text(data.message)
+                else
+                    window.location.reload()
+    return false
+)

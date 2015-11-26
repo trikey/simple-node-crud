@@ -126,18 +126,15 @@ app.get('/admin', (req, res) ->
                     posts: posts
                     users: users
         )
-
-
-
-
-#            User.forge()
-#            .fetch()
-#            .then (collection2) ->
-#                users = collection2.toJSON()
-#                console.log posts
-
 )
 
+app.get('/add', (req, res) ->
+    console.log req.query
+    if req.query.table?
+        res.render req.query.table
+    else
+        res.status(500).json(error: true, data: message: "не найден вид")
+)
 
 app.get('/auth', (req, res) ->
     if(req.isAuthenticated())
@@ -172,7 +169,7 @@ app.post('/auth', (req, res) ->
                     message: err.message
                 )
             else
-                return res.redirect('/')
+                return res.redirect('/admin')
         )
     )(req, res)
 )
@@ -191,6 +188,36 @@ app.post('/users', (req, res) ->
         res.status(500).json(error: true, data: message: err.message)
     )
 )
+
+
+app.put('/users/:id', (req, res) ->
+    User.forge(
+        id: req.params.id
+        username: req.body.username
+        is_admin: req.body.is_admin
+    )
+    .save()
+    .then((user) ->
+        res.json(error: false, data: user.toJSON(), message: "user update")
+    )
+    .catch( (err) ->
+        res.status(500).json(error: true, data: message: err.message)
+    )
+)
+
+
+app.delete('/users/:id', (req, res) ->
+    User.forge(id: req.params.id)
+    .destroy()
+    .then( ->
+        res.json(error: false, message: "user deleted")
+    )
+    .catch( (err) ->
+        res.status(500).json(error: true, data: message: err.message)
+    )
+)
+
+
 
 app.get('/', (req, res) ->
 

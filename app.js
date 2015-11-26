@@ -159,6 +159,20 @@
     }
   });
 
+  app.get('/add', function(req, res) {
+    console.log(req.query);
+    if (req.query.table != null) {
+      return res.render(req.query.table);
+    } else {
+      return res.status(500).json({
+        error: true,
+        data: {
+          message: "не найден вид"
+        }
+      });
+    }
+  });
+
   app.get('/auth', function(req, res) {
     if (req.isAuthenticated()) {
       return res.redirect('/');
@@ -197,7 +211,7 @@
             message: err.message
           });
         } else {
-          return res.redirect('/');
+          return res.redirect('/admin');
         }
       });
     })(req, res);
@@ -213,6 +227,45 @@
         error: false,
         data: user.toJSON(),
         message: "user saved"
+      });
+    })["catch"](function(err) {
+      return res.status(500).json({
+        error: true,
+        data: {
+          message: err.message
+        }
+      });
+    });
+  });
+
+  app.put('/users/:id', function(req, res) {
+    return User.forge({
+      id: req.params.id,
+      username: req.body.username,
+      is_admin: req.body.is_admin
+    }).save().then(function(user) {
+      return res.json({
+        error: false,
+        data: user.toJSON(),
+        message: "user update"
+      });
+    })["catch"](function(err) {
+      return res.status(500).json({
+        error: true,
+        data: {
+          message: err.message
+        }
+      });
+    });
+  });
+
+  app["delete"]('/users/:id', function(req, res) {
+    return User.forge({
+      id: req.params.id
+    }).destroy().then(function() {
+      return res.json({
+        error: false,
+        message: "user deleted"
       });
     })["catch"](function(err) {
       return res.status(500).json({

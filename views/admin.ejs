@@ -2,8 +2,13 @@
 <h1>Администрационная область</h1>
 <br/>
 <h3>Новости</h3>
+<div>
+    <a href="#" class="add-item" data-table="addpost">Добавить</a> <span class="glyphicon glyphicon-plus"></span>
+</div>
+<br/>
+<% if(locals.posts.length) { %>
 <div class="table-responsive">
-    <table class="table table-bordered table-hover">
+    <table class="table table-bordered table-hover posts-table">
         <thead>
         <tr>
             <th>id</th>
@@ -11,24 +16,32 @@
             <th>html</th>
             <th>created_at</th>
             <th>updated_at</th>
+            <th></th>
         </tr>
         </thead>
         <tbody>
         <% posts.forEach(function(item) { %>
-        <tr>
-            <th><%= item.id %></th>
-            <th><%= item.title %></th>
-            <th><%= item.html %></th>
-            <th><%= item.created_at %></th>
-            <th><%= item.updated_at %></th>
+        <tr data-id="<%= item.id %>" data-url="/">
+            <td class="non-editable"><%= item.id %></td>
+            <td data-column-name="title"><%= item.title %></td>
+            <td data-column-name="post"><%= item.html %></td>
+            <td data-column-name="created_at"><%= item.created_at %></td>
+            <td data-column-name="updated_at"><%= item.updated_at %></td>
+            <td class="non-editable delete"><span href="#" class="glyphicon glyphicon-remove"></span></td>
         </tr>
         <% }); %>
         </tbody>
     </table>
 </div>
+<% } %>
 <h3>Пользователи</h3>
+<div>
+    <a href="#" class="add-item" data-table="adduser">Добавить</a> <span class="glyphicon glyphicon-plus"></span>
+</div>
+<br/>
+<% if(locals.users.length) { %>
 <div class="table-responsive">
-    <table class="table table-bordered table-hover">
+    <table class="table table-bordered table-hover posts-table">
         <thead>
         <tr>
             <th>id</th>
@@ -37,20 +50,23 @@
             <th>is_admin</th>
             <th>created_at</th>
             <th>updated_at</th>
+            <th></th>
         </tr>
         </thead>
         <tbody>
         <% users.forEach(function(item) { %>
-        <tr>
-            <th><%= item.id %></th>
-            <th><%= item.username %></th>
-            <th><%= item.password %></th>
-            <th><%= item.is_admin %></th>
-            <th><%= item.created_at %></th>
-            <th><%= item.updated_at %></th>
+        <tr data-id="<%= item.id %>" data-url="/users/">
+            <td class="non-editable"><%= item.id %></td>
+            <td data-column-name="username"><%= item.username %></td>
+            <td class="non-editable"><%= item.password %></td>
+            <td data-column-name="is_admin"><%= item.is_admin %></td>
+            <td data-column-name="created_at"><%= item.created_at %></td>
+            <td data-column-name="updated_at"><%= item.updated_at %></td>
+            <td class="non-editable delete"><span href="#" class="glyphicon glyphicon-remove"></span></td>
         </tr>
         <% }); %>
         </tbody>
     </table>
 </div>
+<% } %>
 <% include footer %>
