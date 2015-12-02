@@ -1,0 +1,36 @@
+<div class="custom-modal modal fade bs-example-modal-lg" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Добавить новость</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <div class="modal-body">
+                <form class="form" action="/usersingroup" method="post">
+                    <div class="form-group">
+                        <label for="exampleInputEmail1">ID пользователя</label>
+                        <select name="user_id" id="exampleInputEmail1">
+                            <% users.forEach(function(item) { %>
+                            <option value="<%= item.id %>"><%= item.id %></option>
+                            <% }); %>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputEmail2">ID группы</label>
+                        <select name="group_id" id="exampleInputEmail2">
+                            <% groups.forEach(function(item) { %>
+                            <option value="<%= item.id %>"><%= item.id %></option>
+                            <% }); %>
+                        </select>
+                    </div>
+                    <input type="text" class="btn btn-default" name="hidden" value="Добавить" style="display: none;">
+                    <input type="button" class="btn btn-default" id='add_item' value="Добавить">
+                </form>
+                <p class="text-danger" id="error"></p>
+            </div>
+                <div class="modal-footer">
+                    <button class="btn" data-dismiss="modal">Закрыть</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

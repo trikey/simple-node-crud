@@ -24,4 +24,26 @@ Schema =
         updated_at:
             type: 'dateTime', nullable: true
 
+    groups:
+        id:
+            type: 'increments', nullable: false, primary: true
+        title:
+            type: 'string', maxlength: 150, nullable: false
+        created_at:
+            type: 'dateTime', nullable: false
+        updated_at:
+            type: 'dateTime', nullable: true
+
+    user_in_groups:
+        id:
+            type: 'increments', nullable: false, primary: true
+        user_id:
+            type: 'integer', nullable: false, unsigned: true, references: 'users.id'
+        group_id:
+            type: 'integer', nullable: false, unsigned: true, references: 'groups.id'
+        created_at:
+            type: 'dateTime', nullable: false
+        updated_at:
+            type: 'dateTime', nullable: true
+
 module.exports = Schema
