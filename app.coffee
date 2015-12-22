@@ -7,7 +7,7 @@ bcrypt = require('bcrypt-nodejs')
 async = require('async')
 fs = require('fs')
 requireRoutes = require('express-require-routes');
-
+multer  = require('multer')
 
 app = express()
 http = require('http').Server(app);

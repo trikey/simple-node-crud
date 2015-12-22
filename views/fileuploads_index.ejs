@@ -1,0 +1,8 @@
+<% include header %>
+<h1>Загрузить фото</h1>
+<form action="/fileuploads" method="post" enctype="multipart/form-data" class="custom_form">
+    <input type="file" name="file" />
+    <br/>
+    <input type="submit" value="Отправить" class="btn btn-primary"/>
+</form>
+<% include footer %>

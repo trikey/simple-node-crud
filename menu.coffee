@@ -11,5 +11,8 @@ Menu =
     auth:
         href: '/auth/',
         title: 'Авторизация'
+    fileuploads:
+        href: '/fileuploads/',
+        title: 'Загрузка файлов'
 
 module.exports = Menu
